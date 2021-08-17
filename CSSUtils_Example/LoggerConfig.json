@@ -1,0 +1,58 @@
+{
+  "HideDebugLevelLOGsInRelease": true,
+  "ShowLOGsInConsoleWindow": true,
+  "ShowLOGsInOutputWindow": true,
+  "KeepLOGsFilesForDays": 7,
+  "MaxLOGFileSizeMB": 30,
+  "DEBUG_Color": 15,
+  "INFO_Color": 10,
+  "WARNING_Color": 14,
+  "ERROR_Color": 12,
+  "CRITICAL_Color": 12,
+  "FATAL_Color": 4,
+  "LOGsFolderPath": "",
+  "LoggerStartInfo": true
+}
+
+/* Informações sobre o Arquivo de Configuração
+  
+  # Esconder LOGS de DEBUG em RELEASE #
+  true: Os LOGS de Nivel DEBUG não seram impressos no terminal ou salvos em Arquivo caso esteja no modo RELEASE
+  false: Todos os LOGS de Nivel DEBUG serão impressos no terminal e salvos em Arquivo mesmo em modo RELEASE
+
+  # Exibir LOGS na Janela de Saída #
+  true: LOGS são impressos na Janela "Saída/Output"
+  fasle: LOGS não são impressos na Janela "Saída/Output"
+
+  # Manter os Arquivos de LOG por X dias #
+  Mantem os Arquivos de LOGS pelo Tempo Informado
+
+  # Tamanho Maximo do Arquivo de LOG #
+  Começa a Sobrescrever os Arquivos de LOG quando o limite é atingido
+  O Limite é em MB
+
+  # Lista das Corres dos LOGS para o Console #
+  Black = 0,
+  DarkBlue = 1,
+  DarkGreen = 2,
+  DarkCyan = 3,
+  DarkRed = 4,
+  DarkMagenta = 5,
+  DarkYellow = 6,
+  Gray = 7,
+  DarkGray = 8,
+  Blue = 9,
+  Green = 10,
+  Cyan = 11,
+  Red = 12,
+  Magenta = 13,
+  Yellow = 14,
+  White = 15
+
+  # Caminho da Pasta de LOGS #
+  Se deixado vazio, será criada a pasta no mesmo diretório do EXE
+
+  # Informações do Logger ao Iniciar #
+  true: Exibe a mensagem de Boas Vindas do Logger quando iniciado
+  false: Não exibe a mensagem de Boas Vindas
+ */
