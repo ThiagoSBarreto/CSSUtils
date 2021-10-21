@@ -27,7 +27,7 @@ namespace CSSUtils.Logger
         /// <param name="ex">Exception Gerada pelo Sistema</param>
         /// <param name="message">Mensagem Opcional sobre o erro</param>
         /// <param name="logType">Tipo do LOG</param>
-        void CreateLog(Exception ex = null, string message = "", LogType logType = LogType.INFO);
+        void CreateLog(Exception ex = null, string message = "", LogType logType = LogType.MESSAGE);
     }
 
     /// <summary>
@@ -35,14 +35,26 @@ namespace CSSUtils.Logger
     /// </summary>
     public enum LogType
     {
+        /// <summary>
+        /// Log de Nivel DEBUG ( não é gerado em modo release )
+        /// </summary>
         DEBUG,
+        /// <summary>
+        /// Log de Nivel WARNING ( Atenção )
+        /// </summary>
         WARNING,
+        /// <summary>
+        /// Log de Nivel ERRO ( erro no metodo/chamada/tipo/conversão )
+        /// </summary>
         ERROR,
+        /// <summary>
+        /// Log de Nivel CRITICAL ( erro do Sistema/Instabilidade )
+        /// </summary>
         CRITICAL,
-        MESSAGE,
-        UTIL,
-        STACK_TRACE,
-        INFO
+        /// <summary>
+        /// Log de Nivel MESSAGE ( mensagem de inicio/fim de Metodo/Atividade )
+        /// </summary>
+        MESSAGE
     }
 
     /// <summary>
@@ -50,9 +62,21 @@ namespace CSSUtils.Logger
     /// </summary>
     public enum TipoTamanhoLog
     {
+        /// <summary>
+        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1
+        /// </summary>
         KB = 1,
+        /// <summary>
+        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1024
+        /// </summary>
         MB = 1024,
+        /// <summary>
+        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1048576
+        /// </summary>
         GB = 1048576,
+        /// <summary>
+        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1073741824
+        /// </summary>
         TB = 1073741824
     }
 
@@ -61,9 +85,21 @@ namespace CSSUtils.Logger
     /// </summary>
     public enum TipoPersistencia
     {
+        /// <summary>
+        /// TempoPersistenciaLog será em HORAS
+        /// </summary>
         HORAS,
+        /// <summary>
+        /// TempoPersistenciaLog será em DIAS
+        /// </summary>
         DIAS,
+        /// <summary>
+        /// TempoPersistenciaLog será em MESES
+        /// </summary>
         MESES,
+        /// <summary>
+        /// TempoPersistenciaLog será em ANOS
+        /// </summary>
         ANOS
     }
 }
