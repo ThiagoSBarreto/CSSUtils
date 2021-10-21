@@ -51,6 +51,8 @@
     <Compile Include="Commands\BindingCommand.cs" />
     <Compile Include="Events\IEventer.cs" />
     <Compile Include="Events\IPublicEventer.cs" />
+    <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Logger\Logger.cs" />
     <Compile Include="Services\IServiceBase.cs" />
     <Compile Include="Services\IServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,8 +65,6 @@
       <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Log\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
