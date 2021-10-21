@@ -25,9 +25,15 @@ namespace CSSUtils.Logger
             _logRoutine = new Timer(new TimerCallback(LogRoutine), null, 0, 900);
         }
 
-        public void CreateLog(Exception ex = null, string message = "", LogType logType = LogType.INFO)
+        public void CreateLog(Exception ex = null, LogType logType = LogType.MESSAGE, string message = "")
         {
             if (_config == null) Configurar();
+
+#if DEBUG
+
+#else
+            if (logType == LogType.DEBUG) return;
+#endif
 
             string caminhoRaiz = _config.Caminho;
             string caminhoTipo = Path.Combine(caminhoRaiz, logType.ToString().ToUpper());
@@ -149,37 +155,40 @@ namespace CSSUtils.Logger
                     {
                         foreach (string anoLog in Directory.GetDirectories(tipoLog))
                         {
-                            foreach (string logFile in Directory.GetDirectories(anoLog))
+                            foreach (string mesLog in Directory.GetDirectories(anoLog))
                             {
-                                while (true)
+                                foreach (string logFile in Directory.GetFiles(mesLog))
                                 {
-                                    FileInfo fi = new FileInfo(logFile);
-                                    if ((DateTime.Now - fi.CreationTime).TotalSeconds > maxTime)
+                                    while (true)
                                     {
-                                        File.Delete(logFile);
-                                    }
-                                    else if (fi.Length > maxFileSize)
-                                    {
-                                        using (StreamReader sr = new StreamReader(logFile))
+                                        FileInfo fi = new FileInfo(logFile);
+                                        if ((DateTime.Now - fi.CreationTime).TotalSeconds > maxTime)
                                         {
-                                            using (StreamWriter sw = new StreamWriter(tempFile))
+                                            File.Delete(logFile);
+                                        }
+                                        else if (fi.Length > maxFileSize)
+                                        {
+                                            using (StreamReader sr = new StreamReader(logFile))
                                             {
-                                                string line;
-                                                int ignoreLines = 0;
-                                                while ((line = sr.ReadLine()) != null)
+                                                using (StreamWriter sw = new StreamWriter(tempFile))
                                                 {
-                                                    if (ignoreLines > 5)
+                                                    string line;
+                                                    int ignoreLines = 0;
+                                                    while ((line = sr.ReadLine()) != null)
                                                     {
-                                                        sw.WriteLine(line);
+                                                        if (ignoreLines > 5)
+                                                        {
+                                                            sw.WriteLine(line);
+                                                        }
+                                                        ignoreLines++;
                                                     }
-                                                    ignoreLines++;
+                                                    File.Delete(logFile);
+                                                    File.Move(tempFile, logFile);
                                                 }
-                                                File.Delete(logFile);
-                                                File.Move(tempFile, logFile);
                                             }
                                         }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }

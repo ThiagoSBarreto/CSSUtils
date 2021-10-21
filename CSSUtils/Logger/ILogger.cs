@@ -25,9 +25,9 @@ namespace CSSUtils.Logger
         /// Cria uma mensagem de LOG e grava em Arquivo
         /// </summary>
         /// <param name="ex">Exception Gerada pelo Sistema</param>
-        /// <param name="message">Mensagem Opcional sobre o erro</param>
         /// <param name="logType">Tipo do LOG</param>
-        void CreateLog(Exception ex = null, string message = "", LogType logType = LogType.MESSAGE);
+        /// /// <param name="message">Mensagem Opcional sobre o erro</param>
+        void CreateLog(Exception ex = null, LogType logType = LogType.MESSAGE, string message = "");
     }
 
     /// <summary>
