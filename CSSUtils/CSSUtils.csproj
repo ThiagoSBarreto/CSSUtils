@@ -59,6 +59,7 @@
     <Compile Include="Events\Eventer.cs" />
     <Compile Include="Events\PublicEventer.cs" />
     <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="BaseModel\BaseViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
