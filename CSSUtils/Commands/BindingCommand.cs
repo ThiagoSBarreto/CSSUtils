@@ -9,29 +9,45 @@ namespace CSSUtils.Commands
 {
     public class BindingCommand : ICommand
     {
-        readonly Action<object> _execute;
+        readonly Action<object> _executeWithParameter;
+        readonly Action _execute;
         readonly Predicate<object> _canExecute;
 
         public BindingCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
-            this._execute = execute;
-            this._canExecute = canExecute;
+            _executeWithParameter = execute;
+            _canExecute = canExecute;
+        }
+
+        public BindingCommand(Action execute, Predicate<object> canExecute = null)
+        {
+            if (execute == null)
+                throw new ArgumentNullException("execute");
+            _execute = execute;
+            _canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return this._canExecute == null || this._canExecute(parameter);
+            return _canExecute == null || this._canExecute(parameter);
         }
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
-        public void Execute(object parameter) 
-        { 
-            this._execute(parameter);
+        public void Execute(object parameter = null) 
+        {
+            if (parameter == null)
+            {
+                _execute();
+            }
+            else
+            {
+                _executeWithParameter(parameter);
+            }
         }
     }
 }
