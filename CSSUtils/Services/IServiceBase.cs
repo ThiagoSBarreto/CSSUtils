@@ -8,7 +8,13 @@ namespace CSSUtils.Services
 {
     public interface IServiceBase
     {
+        /// <summary>
+        /// Metodo que será chamado ao carregar o serviço
+        /// </summary>
         void Configure();
+        /// <summary>
+        /// Metodo que será chamado ao descarregar o serviço
+        /// </summary>
         void Dispose();
     }
 }
