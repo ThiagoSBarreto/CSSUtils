@@ -49,17 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BindingCommand.cs" />
-    <Compile Include="Log\LoggerConfig.cs" />
     <Compile Include="Events\IEventer.cs" />
-    <Compile Include="Log\ILogger.cs" />
     <Compile Include="Events\IPublicEventer.cs" />
-    <Compile Include="Log\LogLevel.cs" />
-    <Compile Include="Log\LogObject.cs" />
     <Compile Include="Services\IServiceBase.cs" />
     <Compile Include="Services\IServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Events\Eventer.cs" />
-    <Compile Include="Log\Logger.cs" />
     <Compile Include="Events\PublicEventer.cs" />
     <Compile Include="Services\ServiceLocator.cs" />
   </ItemGroup>
@@ -67,6 +62,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Log\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
