@@ -60,14 +60,14 @@
     <Compile Include="Events\PublicEventer.cs" />
     <Compile Include="Services\ServiceLocator.cs" />
     <Compile Include="BaseModel\BaseViewModel.cs" />
+    <Compile Include="ViewModelResolver\IModelFinder.cs" />
+    <Compile Include="ViewModelResolver\ModelFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModelResolver\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

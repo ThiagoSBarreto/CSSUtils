@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace CSSUtils.Logger
     public class Logger : ILogger
     {
         private ConfiguracaoLog _config;
-        private Timer _logRoutine;
+        private object _logLocker = new object();
 
         public void Configurar(string caminho = "", int tamanhoMaximoLog = 30, TipoTamanhoLog tipoTamanhoLog = TipoTamanhoLog.MB, int tempoPersistenciaLog = 3, TipoPersistencia tipoPersistencia = TipoPersistencia.DIAS)
         {
@@ -22,7 +23,7 @@ namespace CSSUtils.Logger
             _config.TempoPersistencia = tempoPersistenciaLog;
             _config.TipoPersistencia = tipoPersistencia;
 
-            _logRoutine = new Timer(new TimerCallback(LogRoutine), null, 0, 900);
+            if (!Directory.Exists(_config.Caminho)) Directory.CreateDirectory(_config.Caminho);
         }
 
         public void CreateLog(Exception ex = null, LogType logType = LogType.MESSAGE, string message = "")
@@ -43,7 +44,6 @@ namespace CSSUtils.Logger
 
             try
             {
-                if (!Directory.Exists(caminhoRaiz)) Directory.CreateDirectory(caminhoRaiz);
                 if (!Directory.Exists(caminhoTipo)) Directory.CreateDirectory(caminhoTipo);
                 if (!Directory.Exists(caminhoAno)) Directory.CreateDirectory(caminhoAno);
                 if (!Directory.Exists(caminhoMes)) Directory.CreateDirectory(caminhoMes);
@@ -83,12 +83,17 @@ namespace CSSUtils.Logger
             }
             sb.AppendLine("============================= FIM DO LOG =============================");
 
-            using (FileStream fs = new FileStream(caminhoArquivo, FileMode.OpenOrCreate))
+            lock (_logLocker)
             {
-                using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
+                if (!File.Exists(caminhoArquivo))
                 {
-                    sw.Write(sb.ToString());
+                    File.Create(caminhoArquivo).Close();
                 }
+                using (StreamWriter sw = new StreamWriter(caminhoArquivo, true))
+                {
+                    sw.WriteLine(sb.ToString());
+                }
+                LogRoutine();
             }
         }
 
@@ -112,21 +117,24 @@ namespace CSSUtils.Logger
             return sb.ToString();
         }
 
-        private void LogRoutine(object state)
+        private void LogRoutine()
         {
             string tempFile = Path.Combine(_config.Caminho, "log.tmp");
 
             long maxFileSize = _config.TamanhoLog;
             switch (_config.TipoTamanho)
             {
-                case TipoTamanhoLog.MB:
+                case TipoTamanhoLog.KB:
                     maxFileSize = maxFileSize * 1024;
                     break;
-                case TipoTamanhoLog.GB:
+                case TipoTamanhoLog.MB:
                     maxFileSize = maxFileSize * 1048576;
                     break;
-                case TipoTamanhoLog.TB:
+                case TipoTamanhoLog.GB:
                     maxFileSize = maxFileSize * 1073741824;
+                    break;
+                case TipoTamanhoLog.TB:
+                    maxFileSize = maxFileSize * 1099511627776;
                     break;
             }
 
@@ -149,11 +157,11 @@ namespace CSSUtils.Logger
 
             try
             {
-                foreach (string logFolder in Directory.GetDirectories(_config.Caminho))
+                Task task = new Task(() =>
                 {
-                    foreach (string tipoLog in Directory.GetDirectories(logFolder))
+                    foreach (string logFolder in Directory.GetDirectories(_config.Caminho))
                     {
-                        foreach (string anoLog in Directory.GetDirectories(tipoLog))
+                        foreach (string anoLog in Directory.GetDirectories(logFolder))
                         {
                             foreach (string mesLog in Directory.GetDirectories(anoLog))
                             {
@@ -168,32 +176,43 @@ namespace CSSUtils.Logger
                                         }
                                         else if (fi.Length > maxFileSize)
                                         {
-                                            using (StreamReader sr = new StreamReader(logFile))
+                                            lock (_logLocker)
                                             {
-                                                using (StreamWriter sw = new StreamWriter(tempFile))
+                                                using (StreamReader sr = new StreamReader(logFile))
                                                 {
-                                                    string line;
-                                                    int ignoreLines = 0;
-                                                    while ((line = sr.ReadLine()) != null)
+                                                    using (StreamWriter sw = new StreamWriter(tempFile))
                                                     {
-                                                        if (ignoreLines > 5)
+                                                        string line;
+                                                        int ignoreLines = 0;
+                                                        while ((line = sr.ReadLine()) != null)
                                                         {
-                                                            sw.WriteLine(line);
+                                                            if (ignoreLines > 2)
+                                                            {
+                                                                sw.WriteLine(line);
+                                                            }
+                                                            ignoreLines++;
                                                         }
-                                                        ignoreLines++;
+                                                        sw.Close();
+                                                        sr.Close();
+                                                        File.Delete(logFile);
+                                                        File.Move(tempFile, logFile);
+                                                        fi = new FileInfo(logFile);
+                                                        if (fi.Length <= maxFileSize)
+                                                        {
+                                                            break;
+                                                        }
                                                     }
-                                                    File.Delete(logFile);
-                                                    File.Move(tempFile, logFile);
                                                 }
                                             }
                                         }
-                                        break;
                                     }
+                                    break;
                                 }
                             }
                         }
                     }
-                }
+                });
+                task.Start();
             }
             catch(FileNotFoundException ex)
             {
