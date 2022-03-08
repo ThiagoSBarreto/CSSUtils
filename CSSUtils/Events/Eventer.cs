@@ -8,6 +8,11 @@ namespace CSSUtils.Events
     {
         private Dictionary<object, object> _events = new Dictionary<object, object>();
 
+        /// <summary>
+        /// Gets the event by its Class name, if not registered, it will be added
+        /// </summary>
+        /// <typeparam name="T">The Class name of the Event</typeparam>
+        /// <returns></returns>
         public T GetEvent<T>()
         {
             if (_events.Keys.Contains(typeof(T)))

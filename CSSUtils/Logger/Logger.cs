@@ -13,20 +13,43 @@ namespace CSSUtils.Logger
     {
         private ConfiguracaoLog _config;
         private object _logLocker = new object();
+        private Timer _routineTimer;
 
-        public void Configurar(string caminho = "", int tamanhoMaximoLog = 30, TipoTamanhoLog tipoTamanhoLog = TipoTamanhoLog.MB, int tempoPersistenciaLog = 3, TipoPersistencia tipoPersistencia = TipoPersistencia.DIAS)
+        public void Configurar(string logPath = "", int logMaxSize = 30, LogStorageUnit storateUnit = LogStorageUnit.MB, int logMaxPersistency = 3, LogPersistencyType logPersistencyType = LogPersistencyType.DAYS)
         {
             _config = new ConfiguracaoLog();
-            _config.Caminho = string.IsNullOrWhiteSpace(caminho) ? Path.Combine(Environment.CurrentDirectory, "LOG") : caminho;
-            _config.TamanhoLog = tamanhoMaximoLog;
-            _config.TipoTamanho = tipoTamanhoLog;
-            _config.TempoPersistencia = tempoPersistenciaLog;
-            _config.TipoPersistencia = tipoPersistencia;
+            _config.Caminho = string.IsNullOrWhiteSpace(logPath) ? Path.Combine(Environment.CurrentDirectory, "LOG") : logPath;
+            _config.TamanhoLog = logMaxSize;
+            _config.TipoTamanho = storateUnit;
+            _config.TempoPersistencia = logMaxPersistency;
+            _config.TipoPersistencia = logPersistencyType;
 
             if (!Directory.Exists(_config.Caminho)) Directory.CreateDirectory(_config.Caminho);
+
+            _routineTimer = new Timer(new TimerCallback(LogRoutine), null, 0, 86400);
         }
 
-        public void CreateLog(Exception ex = null, LogType logType = LogType.MESSAGE, string message = "")
+        public void CreateLog(string message)
+        {
+            GenerateLog(null, LogType.MESSAGE, message);
+        }
+
+        public void CreateLog(string message, LogType type)
+        {
+            GenerateLog(null, type, message);
+        }
+
+        public void CreateLog(string message, Exception ex)
+        {
+            GenerateLog(ex, LogType.ERROR, message);
+        }
+
+        public void CreateLog(string message, Exception ex, LogType type)
+        {
+            GenerateLog(ex, type, message);
+        }
+
+        private void GenerateLog(Exception ex = null, LogType logType = LogType.MESSAGE, string message = "")
         {
             if (_config == null) Configurar();
 
@@ -93,7 +116,6 @@ namespace CSSUtils.Logger
                 {
                     sw.WriteLine(sb.ToString());
                 }
-                LogRoutine();
             }
         }
 
@@ -117,23 +139,23 @@ namespace CSSUtils.Logger
             return sb.ToString();
         }
 
-        private void LogRoutine()
+        private void LogRoutine(object state)
         {
             string tempFile = Path.Combine(_config.Caminho, "log.tmp");
 
             long maxFileSize = _config.TamanhoLog;
             switch (_config.TipoTamanho)
             {
-                case TipoTamanhoLog.KB:
+                case LogStorageUnit.KB:
                     maxFileSize = maxFileSize * 1024;
                     break;
-                case TipoTamanhoLog.MB:
+                case LogStorageUnit.MB:
                     maxFileSize = maxFileSize * 1048576;
                     break;
-                case TipoTamanhoLog.GB:
+                case LogStorageUnit.GB:
                     maxFileSize = maxFileSize * 1073741824;
                     break;
-                case TipoTamanhoLog.TB:
+                case LogStorageUnit.TB:
                     maxFileSize = maxFileSize * 1099511627776;
                     break;
             }
@@ -141,16 +163,16 @@ namespace CSSUtils.Logger
             long maxTime = _config.TempoPersistencia;
             switch (_config.TipoPersistencia)
             {
-                case TipoPersistencia.HORAS:
+                case LogPersistencyType.HOURS:
                     maxTime = maxTime * 3600;
                     break;
-                case TipoPersistencia.DIAS:
+                case LogPersistencyType.DAYS:
                     maxTime = maxTime * 86400;
                     break;
-                case TipoPersistencia.MESES:
+                case LogPersistencyType.MONTHS:
                     maxTime = maxTime * 2629800;
                     break;
-                case TipoPersistencia.ANOS:
+                case LogPersistencyType.YEARS:
                     maxTime = maxTime * 31557600;
                     break;
             }
@@ -236,9 +258,9 @@ namespace CSSUtils.Logger
         {
             public string Caminho { get; set; }
             public int TamanhoLog { get; set; }
-            public TipoTamanhoLog TipoTamanho { get; set; }
+            public LogStorageUnit TipoTamanho { get; set; }
             public int TempoPersistencia { get; set; }
-            public TipoPersistencia TipoPersistencia { get; set; }
+            public LogPersistencyType TipoPersistencia { get; set; }
         }
     }
 }

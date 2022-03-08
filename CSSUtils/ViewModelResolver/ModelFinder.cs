@@ -31,7 +31,7 @@ namespace CSSUtils.ViewModelResolver
             }
             else
             {
-                throw new ApplicationException($"Pagina ou Janela não encontrada: {View.GetType().FullName}");
+                throw new ApplicationException($"Page or Window not found: {View.GetType().FullName}");
             }
 
             object model = Assembly.GetCallingAssembly().CreateInstance(viewModelName);
@@ -42,12 +42,12 @@ namespace CSSUtils.ViewModelResolver
                 else if (View is Window w) w.DataContext = model;
                 else
                 {
-                    throw new ApplicationException($"Não foi possivel resolver o ViewModel porque a classe utilizado não é uma \"Page\" ou \"Window\"");
+                    throw new ApplicationException($"Couldn't resolve the ViewModel because the class isn't a \"Page\" or a \"Window\"");
                 }
             }
             else
             {
-                throw new ApplicationException($"Não foi encontrado o ViewModel correspondente: {viewModelName}");
+                throw new ApplicationException($"ViewModel not found: {viewModelName}");
             }
         }
 
@@ -60,7 +60,7 @@ namespace CSSUtils.ViewModelResolver
             }
             catch
             {
-                throw new ApplicationException($"O ViewModel: {_viewModels[sender].GetType().FullName} não contém o metódo \"Dispose\"");
+                throw new ApplicationException($"The ViewModel: {_viewModels[sender].GetType().FullName} doesn't have a \"Dispose\" method");
             }
         }
 
@@ -72,7 +72,7 @@ namespace CSSUtils.ViewModelResolver
             }
             catch
             {
-                Console.Error.WriteLine($"O ViewModel {_viewModels[sender].GetType().FullName} não contém o metódo \"Dispose\"");
+                throw new ApplicationException($"The ViewModel: {_viewModels[sender].GetType().FullName} doesn't have a \"Dispose\" method");
             }
         }
     }

@@ -9,9 +9,9 @@ namespace CSSUtils.Events
     public interface IEventer
     {
         /// <summary>
-        /// Recupera um Evento previamente cadastrado
+        /// Gets the event from the event list, if not existent, the event will be added
         /// </summary>
-        /// <typeparam name="T">Nome do Evento</typeparam>
+        /// <typeparam name="T">Event Class</typeparam>
         /// <returns></returns>
         T GetEvent<T>();
     }
@@ -19,15 +19,15 @@ namespace CSSUtils.Events
     public enum ThreadOptions
     {
         /// <summary>
-        /// Executa o CallBack na mesma Thread onde foi Publicada
+        /// Executes the Callback Method in the same Thread as the caller.
         /// </summary>
         MainThread,
         /// <summary>
-        /// Execute o CallBack na Thread UI
+        /// Pass the execution of the Callback Method to the UI Thread
         /// </summary>
         UIThread,
         /// <summary>
-        /// Execute o CallBack em uma Thread secundaria
+        /// Executes the Callback Method in a new Background Thread
         /// </summary>
         BackgroundThread,
     }

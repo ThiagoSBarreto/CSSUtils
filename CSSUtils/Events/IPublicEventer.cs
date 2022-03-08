@@ -9,20 +9,21 @@ namespace CSSUtils.Events
     public interface IPublicEventer<T>
     {
         /// <summary>
-        /// Se inscreve no Evento passando um metodo de CallBack que deve receber o mesmo tipo do evento
+        /// Subscribe a Method to the Event, whenever it's raised, this Method will be executed in the configured Thread.
+        /// This Subscribe requires a TYPE to the payload
         /// </summary>
-        /// <param name="payload">Metodo que será chamado quando ocorrer umas publicação. Deve receber o mesmo tipo do evento cadastrado</param>
-        /// <param name="options">Define o tipo de Thread utilizada na chamada do CallBack</param>
+        /// <param name="payload">Callback Method</param>
+        /// <param name="options">The type of Thread that will be used to execute the Callback Method</param>
         void Subscribe(Action<T> payload, ThreadOptions options = ThreadOptions.MainThread);
 
         /// <summary>
-        /// Remove a inscrição no evento, sendo necessario informar o mesmo Metodo para CallBack utilizado na inscrição
+        /// Unsubscribe the Method to the Event, the Callback Method must be passed to Unsubscribe
         /// </summary>
-        /// <param name="payload">Metodo CallBack utilizado na inscricao</param>
+        /// <param name="payload">Callback Method used in the Subscription</param>
         void Unsubscribe(Action<T> payload);
 
         /// <summary>
-        /// Publica o Objeto do tipo utilizado na criação do evento, chamando todos os Metodos CallBack inscritos
+        /// Publish the payload to the event and call all subscribed Callback Methods
         /// </summary>
         /// <param name="payload"></param>
         void Publish(T payload);
@@ -31,20 +32,21 @@ namespace CSSUtils.Events
     public interface IPublicEventer
     {
         /// <summary>
-        /// Se inscreve no Evento passando um metodo de CallBack
+        /// Subscribe a Method to the Event, whenever it's raised, this Method will be executed in the configured Thread
+        /// This Subscribe DOESN'T use payloads
         /// </summary>
-        /// <param name="payload">Metodo que será chamado quando ocorrer umas publicação</param>
-        /// <param name="options">Define o tipo de Thread utilizada na chamada do CallBack</param>
+        /// <param name="payload">Callback Method</param>
+        /// <param name="options">The type of Thread that will be used to execute the Callback Method</param>
         void Subscribe(Action payload, ThreadOptions options = ThreadOptions.MainThread);
 
         /// <summary>
-        /// Remove a inscrição no evento, sendo necessario informar o mesmo Metodo para CallBack utilizado na inscrição
+        /// Unsubscribe the Method to the Event, the Callback Method must be passed to Unsubscribe
         /// </summary>
-        /// <param name="payload">Metodo CallBack utilizado na inscricao</param>
+        /// <param name="payload">Callback Method used in the Subscription</param>
         void Unsubscribe(Action payload);
 
         /// <summary>
-        /// Publica o evento, chamando todos os Metodos CallBack inscritos
+        /// Publish the payload to the event and call all subscribed Callback Methods
         /// </summary>
         void Publish();
     }

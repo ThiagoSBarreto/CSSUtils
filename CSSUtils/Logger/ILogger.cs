@@ -6,100 +6,117 @@ using System.Threading.Tasks;
 
 namespace CSSUtils.Logger
 {
-    /// <summary>
-    /// Interface utilizada pelo Logger, contendo as funções e auxliares para geração de LOGS
-    /// </summary>
     public interface ILogger
     {
         /// <summary>
-        /// Configurações do LOGGER
+        /// Logger configuration
         /// </summary>
-        /// <param name="caminho">Caminho onde os arquivos de LOG serão armazenados. Padrão: Cria pasta dos LOGS no local onde a aplicação for executada</param>
-        /// <param name="tamanhoMaximoLog">Tamanho Maximo dos arquivos de LOG. Padrão: 30</param>
-        /// <param name="tipoTamanhoLog">Define a unidade do tamanho maximo dos arquivos de LOG. Padrão: MB</param>
-        /// <param name="tempoPersistenciaLog">Define o tempo que os arquivos de LOG existirão no Sistema. Padrão: 3</param>
-        /// <param name="tipoPersistencia">Define a unidade de tempo que os arquivos de LOG existirão no Sistema. Padrão: Dias</param>
-        void Configurar(string caminho = "", int tamanhoMaximoLog = 30, TipoTamanhoLog tipoTamanhoLog = TipoTamanhoLog.MB, int tempoPersistenciaLog = 3, TipoPersistencia tipoPersistencia = TipoPersistencia.DIAS);
+        /// <param name="caminho">Path to the log folder. Default: The assembly execution path</param>
+        /// <param name="tamanhoMaximoLog">Max Log Size. Default: 30</param>
+        /// <param name="tipoTamanhoLog">Storage units for log size. Default: MB</param>
+        /// <param name="tempoPersistenciaLog">Max log persistency time. Default: 3</param>
+        /// <param name="tipoPersistencia">Time unit for log persistency. Default: DAYS</param>
+        void Configurar(string logPath = "", int logMaxSize = 30, LogStorageUnit storateUnit = LogStorageUnit.MB, int logMaxPersistency = 3, LogPersistencyType logPersistencyType = LogPersistencyType.DAYS);
 
         /// <summary>
-        /// Cria uma mensagem de LOG e grava em Arquivo
+        /// Creates a Log with a message that will be put into the MESSAGE Log folder
         /// </summary>
-        /// <param name="ex">Exception Gerada pelo Sistema</param>
-        /// <param name="logType">Tipo do LOG</param>
-        /// /// <param name="message">Mensagem Opcional sobre o erro</param>
-        void CreateLog(Exception ex = null, LogType logType = LogType.MESSAGE, string message = "");
+        /// <param name="message">The log message</param>
+        void CreateLog(string message);
+
+        /// <summary>
+        /// Create a Log and put into the selected LogType folder
+        /// </summary>
+        /// <param name="message">The log message</param>
+        /// <param name="type">The LogType</param>
+        void CreateLog(string message, LogType type);
+
+        /// <summary>
+        /// Creates a Log and put the STACKTRACE and INNEREXCEPTION STACKTRACE and Error Message into the ERROR LOG folder
+        /// </summary>
+        /// <param name="message">The log message</param>
+        /// <param name="ex">Exception</param>
+        void CreateLog(string message, Exception ex);
+
+        /// <summary>
+        /// Creates a Log and put into the selected LogType folder with the STACKTRACE and INNEREXCEPTION STACKTRACE and Error Messages
+        /// </summary>
+        /// <param name="message">The log message</param>
+        /// <param name="ex">Exception</param>
+        /// <param name="type">The LogType</param>
+        void CreateLog(string message, Exception ex, LogType type);
     }
 
     /// <summary>
-    /// Tipos de LOGS que podem ser gerados
+    /// LogTypes folders
     /// </summary>
     public enum LogType
     {
         /// <summary>
-        /// Log de Nivel DEBUG ( não é gerado em modo release )
+        /// DEBUG LogType, doesn't generates logs in RELEASE mode
         /// </summary>
         DEBUG,
         /// <summary>
-        /// Log de Nivel WARNING ( Atenção )
+        /// WARNING LogType
         /// </summary>
         WARNING,
         /// <summary>
-        /// Log de Nivel ERRO ( erro no metodo/chamada/tipo/conversão )
+        /// ERROR LogType
         /// </summary>
         ERROR,
         /// <summary>
-        /// Log de Nivel CRITICAL ( erro do Sistema/Instabilidade )
+        /// CRITICAL LogType
         /// </summary>
         CRITICAL,
         /// <summary>
-        /// Log de Nivel MESSAGE ( mensagem de inicio/fim de Metodo/Atividade )
+        /// MESSAGE LogType, similar to DEBUG LogType, but is generated in RELEASE mode
         /// </summary>
         MESSAGE
     }
 
     /// <summary>
-    /// Unidade de tamanho do Arquivo de LOG
+    /// Storage Units used into the configurations
     /// </summary>
-    public enum TipoTamanhoLog
+    public enum LogStorageUnit
     {
         /// <summary>
-        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1
+        /// KiloByte size: LogMaxSize * 1
         /// </summary>
         KB = 1,
         /// <summary>
-        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1024
+        /// MegaByte size: LogMaxSize * 1024
         /// </summary>
         MB = 1024,
         /// <summary>
-        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1048576
+        /// GigaByte size: LogMaxSize * 1048576
         /// </summary>
         GB = 1048576,
         /// <summary>
-        /// O tamanho maximo do LOG será: TamanhoMaximoLog * 1073741824
+        /// TeraByte size: LogMaxSize * 1073741824
         /// </summary>
         TB = 1073741824
     }
 
     /// <summary>
-    /// Unidade de tempo da persistencia dos arquivos
+    /// Time unit used into the configurations
     /// </summary>
-    public enum TipoPersistencia
+    public enum LogPersistencyType
     {
         /// <summary>
-        /// TempoPersistenciaLog será em HORAS
+        /// Persists for HOURS
         /// </summary>
-        HORAS,
+        HOURS,
         /// <summary>
-        /// TempoPersistenciaLog será em DIAS
+        /// Persists for DAYS
         /// </summary>
-        DIAS,
+        DAYS,
         /// <summary>
-        /// TempoPersistenciaLog será em MESES
+        /// Persists for Months
         /// </summary>
-        MESES,
+        MONTHS,
         /// <summary>
-        /// TempoPersistenciaLog será em ANOS
+        /// Persists for Years
         /// </summary>
-        ANOS
+        YEARS
     }
 }
