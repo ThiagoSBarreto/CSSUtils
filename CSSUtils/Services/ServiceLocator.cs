@@ -76,8 +76,8 @@ namespace CSSUtils.Services
             string name = typeof(T).Name;
             if (_services.Keys.Contains(name))
             {
-                (_services[name] as IServiceBase).Dispose();
                 (_services[name] as IServiceBase).Stop();
+                (_services[name] as IServiceBase).Dispose();
                 _services.Remove(name);
             }
         }
